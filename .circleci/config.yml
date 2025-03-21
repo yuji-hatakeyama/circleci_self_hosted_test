@@ -9,7 +9,14 @@ jobs:
     resource_class: yuji-hatakeyama/hello-test
     parallelism: 3
     steps:
+      - checkout
       - run: echo "Hi I'm on Runners!"
       - run: whoami
       - run: date
       - run: hostname
+      - run:
+          name: Test application
+          command: |
+              TEST=$(circleci tests glob "tests/**.sh" | circleci tests split --split-by=timings)
+              echo $TEST;
+              for script in $TEST; do bash "$script"; done
